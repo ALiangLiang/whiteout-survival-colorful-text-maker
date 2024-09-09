@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WOS colorful text maker</title>
+</head>
+<body>
+  <h1>Whiteout Survival colorful text maker</h1>
+  <input type="text" id="inputText" placeholder="請輸入文字">
+  <button id="convertButton">Make it!!</button>
+  <p id="result"></p>
+
+  <script>
+    const inputText = document.getElementById('inputText');
+    const convertButton = document.getElementById('convertButton');
+    const result = document.getElementById('result');
+
+    function hslToRgb(h, s, l) {
+      s /= 100;
+      l /= 100;
+      const k = n => (n + h / 30) % 12;
+      const a = s * Math.min(l, 1 - l);
+      const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+      const rgb = [f(0), f(8), f(4)].map(x => Math.round(x * 255));
+      return `#${rgb.map(x => x.toString(16).padStart(2, '0')).join('')}`;
+    }
+
+    function generateColorGradient(index, total) {
+      const hue = (index / total) * 360;
+      return hslToRgb(hue, 100, 50);
+    }
+
+    convertButton.addEventListener('click', () => {
+      const input = inputText.value;
+      const transformedText = input
+        .split('')
+        .map((char, index) => {
+          const color = generateColorGradient(index, input.length);
+          return `<color=${color}>${char}</color>`;
+        })
+        .join('');
+      result.innerText = transformedText;
+    });
+  </script>
+</body>
+</html>
